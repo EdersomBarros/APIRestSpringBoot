@@ -31,11 +31,19 @@ public class IndexController {
 	private UsuarioRepository usuarioRepository;
 	
 	
-	@GetMapping(value = "/{id}", produces = "application/json")
-	public ResponseEntity<Usuario> init (@PathVariable(value = "id")Long id) {
+	@GetMapping(value = "v1/{id}", produces = "application/json")
+	public ResponseEntity<Usuario> initV1 (@PathVariable(value = "id")Long id) {
 		
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		System.out.println("Executando a Vedersão 1");
+		return  new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "v2/{id}", produces = "application/json")
+	public ResponseEntity<Usuario> initV2 (@PathVariable(value = "id")Long id) {
 		
+		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		System.out.println("Executando a Vedersão 2");
 		return  new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
 	}
 	
