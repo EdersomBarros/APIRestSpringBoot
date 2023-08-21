@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,7 +64,8 @@ public class IndexController {
 			usuario.getTelefones().get(pos).setUsuario(usuario);
 			
 		}
-		
+		String senhaCriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
+		usuario.setSenha(senhaCriptografada);
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
 		
 		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
@@ -99,7 +101,15 @@ public class IndexController {
 			usuario.getTelefones().get(pos).setUsuario(usuario);
 
 		}
+		
+		Usuario usuarioTemporario = usuarioRepository.findUserByLogin(usuario.getLogin());
+		
+		if (!usuarioTemporario.getSenha().equals(usuario.getSenha())) {/*Senhas diferentes*/
 
+			String senhaCriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
+			usuario.setSenha(senhaCriptografada);
+		}
+		
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
 		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
